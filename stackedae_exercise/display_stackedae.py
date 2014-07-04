@@ -9,9 +9,6 @@ from library import softmax
 from library import autoencoder
 from library import util
 
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
-
 import scipy.optimize
 
 
