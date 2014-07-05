@@ -28,15 +28,15 @@ if __name__ == '__main__':
 	epsilon = 0.1
 
 	print 'Loading raw STL10-Sampled-Patches data...'
-	patches = stl10.load_images('../data/stlSampledPatches.csv')
+	# patches = stl10.load_images('../data/stlSampledPatches.csv')
 
-	# np.savez("result.npz", train_data = train_data)
+	# np.savez("patches.npz", patches = patches)
 
-	# r = np.load("result.npz")
-	# patches = r["train_data"]
+	r = np.load("patches.npz")
+	patches = r["patches"]
 
 	# Subtract mean patch (hence zeroing the mean of the patches)
-	meanPatch = np.mean(patches, axis=1)
+	meanPatch = np.mean(patches, 1)[:, np.newaxis]
 
 	patches = patches - meanPatch
 
@@ -58,7 +58,8 @@ if __name__ == '__main__':
 
 	W1, W2, b1, b2 = autoencoder.unflatten(optTheta, inputSize, hiddenSize)
 
-	# TODO: display W1
-	# np.savez("result.npz", W1 = W1)
+	# display W1
+	# util.display_color_network( (W1.dot(zcaWhite)).T )
+	np.savez("result.npz", W1 = W1, b1 = b1, zcaWhite = zcaWhite, meanPatch = meanPatch)
 
 
