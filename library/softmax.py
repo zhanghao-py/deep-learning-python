@@ -9,6 +9,7 @@ def cost(theta, numOfClasses, inputSize, lamb, data, labels):
 	groundTruth = np.zeros([numOfClasses, numOfSamples])
 	groundTruth[labels.ravel(), np.arange(numOfSamples)] = 1
 
+
 	td = theta.dot(data)
 	td = td - td.max(0)
 
@@ -22,6 +23,7 @@ def cost(theta, numOfClasses, inputSize, lamb, data, labels):
 	grad = thetaGrad.ravel('F')
 
 	return cost, grad
+
 
 
 def train(inputSize, numOfClasses, lamb, data, labels, maxfun=400):
@@ -39,7 +41,6 @@ def train(inputSize, numOfClasses, lamb, data, labels, maxfun=400):
 
 def predict(model, data):
 	theta = model['optTheta']
-
 	pred = theta.dot(data)
 	return np.argmax(pred, axis=0)
 	# return (theta.dot(data)).argmax(0)

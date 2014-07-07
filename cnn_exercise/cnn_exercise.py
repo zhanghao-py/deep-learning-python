@@ -27,16 +27,16 @@ if __name__ == '__main__':
 	trainImages = r["trainImages"]
 	trainLabels = r["trainLabels"]
 
-	trainImages = trainImages[:,0:2]
-	trainLabels = trainLabels[:,0:2]
+	# trainImages = trainImages[:,0:2]
+	# trainLabels = trainLabels[:,0:2]
 
 	print 'Loading raw STLTestSubset data...'
 	r = np.load("testImages.npz")
 	testImages = r["testImages"]
 	testLabels = r["testLabels"]
 
-	testImages = testImages[:,0:2]
-	testLabels = testLabels[:,0:2]
+	# testImages = testImages[:,0:2]
+	# testLabels = testLabels[:,0:2]
 
 	numTrainImages = trainImages.shape[1]
 	numTestImages = testImages.shape[1]
@@ -91,15 +91,16 @@ if __name__ == '__main__':
 	inputSize = np.size(pooledFeaturesTrain) / numTrainImages
 	softmaxX = np.transpose(pooledFeaturesTrain, [0 2 3 1])
 	softmaxX = softmaxX.reshape([inputSize, numTrainImages])
-	softmaxY = trainLabels
+	softmaxY = np.int_(trainLabels) - 1
 
 	softmaxModel = softmax.train(inputSize, numOfClasses, softmaxLambda, softmaxX, softmaxY, maxfun=100)
 	
-	# Test
+	# # Test
 	inputSize = np.size(pooledFeaturesTest) / numTestImages
 	softmaxX = np.transpose(pooledFeaturesTest, [0 2 3 1])
 	softmaxX = softmaxX.reshape([inputSize, numTestImages])
-	softmaxY = testLabels
+	softmaxY = np.int_(testLabels) - 1
+	softmaxY = softmaxY.reshape([1, numTestImages])
 
 	pred = softmax.predict(softmaxModel, softmaxX)
 	acc = (softmaxY == pred).mean()
