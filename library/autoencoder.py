@@ -54,20 +54,23 @@ def sparseAutoencoderCost(theta, visibleSize, hiddenSize, lamb, sparsityParam, b
 
 	weightDecay = (lamb/2.0) * ( np.sum(np.power(W1, 2)) + np.sum(np.power(W2, 2)) )
 
-	rhohats = np.mean(a2, 1)[:, np.newaxis]
+	rhohats = np.mean(a2, 1)
 
 	sparsityPenalty = beta * kl(rho, rhohats)
 
 	cost = squaredError + weightDecay + sparsityPenalty
 
-	delta3 = -(data - a3) * a3 * (1-a3)
+	delta3 = - np.multiply( np.multiply((data - a3), a3), (1-a3) )
+
 	betaTerm = beta * kl_delta(rho, rhohats)
-	delta2 = (W2.T.dot(delta3) + betaTerm) * a2 * (1-a2)
+	betaTerm = betaTerm.reshape([hiddenSize, 1])
+
+	delta2 = np.multiply( (W2.T.dot(delta3) + betaTerm), np.multiply(a2, (1-a2)) )
 
 	W2grad = (1.0/m) * delta3.dot(a2.T) + lamb * W2
-	b2grad = (1.0/m) * np.sum(delta3, 1)[:, np.newaxis]
+	b2grad = (1.0/m) * np.sum(delta3, 1)
 	W1grad = (1.0/m) * delta2.dot(data.T) + lamb * W1
-	b1grad = (1.0/m) * np.sum(delta2, 1)[:, np.newaxis]
+	b1grad = (1.0/m) * np.sum(delta2, 1)
 
 	grad = flatten(W1grad, W2grad, b1grad, b2grad)
 

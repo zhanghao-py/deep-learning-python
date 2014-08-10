@@ -7,7 +7,8 @@ def cost(theta, numOfClasses, inputSize, lamb, data, labels):
 	theta = theta.reshape([numOfClasses, inputSize], order='F')
 	numOfSamples = data.shape[1]
 	groundTruth = np.zeros([numOfClasses, numOfSamples])
-	groundTruth[labels.ravel(), np.arange(numOfSamples)] = 1
+
+	groundTruth[labels.ravel('F'), np.arange(numOfSamples)] = 1
 
 
 	td = theta.dot(data)
@@ -15,7 +16,7 @@ def cost(theta, numOfClasses, inputSize, lamb, data, labels):
 
 	p = np.exp(td) / np.exp(td).sum(0)
 
-	cost = (-1.0/numOfSamples) * (groundTruth * np.log(p)).sum() + (lamb/2) * np.power(theta, 2).sum();
+	cost = (-1.0/numOfSamples) * np.multiply(groundTruth, np.log(p)).sum() + (lamb/2) * np.power(theta, 2).sum()
 
 	thetaGrad = -1.0/numOfSamples * (groundTruth - p).dot(data.T) + lamb * theta
 
@@ -23,7 +24,6 @@ def cost(theta, numOfClasses, inputSize, lamb, data, labels):
 	grad = thetaGrad.ravel('F')
 
 	return cost, grad
-
 
 
 def train(inputSize, numOfClasses, lamb, data, labels, maxfun=400):
@@ -38,6 +38,10 @@ def train(inputSize, numOfClasses, lamb, data, labels, maxfun=400):
               inputSize = inputSize,
               numOfClasses = numOfClasses)
 
+def model(inputSize, numOfClasses, optTheta):
+	return dict(optTheta = optTheta.reshape([numOfClasses, inputSize], order='F'),
+              inputSize = inputSize,
+              numOfClasses = numOfClasses)
 
 def predict(model, data):
 	theta = model['optTheta']

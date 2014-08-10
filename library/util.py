@@ -70,6 +70,41 @@ def display_network(arr, title=None, show=True):
   if show:
     plt.show()
 
+def display_network_with_wh(arr, width, height, title=None, show=True):
+  arr = arr - np.mean(arr)
+  L, M = arr.shape
+  sz = np.sqrt(L)
+  buf = 1
+
+  # Figure out pleasant grid dimensions
+  if M == np.floor(np.sqrt(M))**2:
+    n = m = np.sqrt(M)
+  else:
+    n = np.ceil(np.sqrt(M))
+    while (M%n) and n < 1.2*np.sqrt(M):
+      n += 1
+    m = np.ceil(M/n)
+
+  array = np.zeros([buf+m*(height+buf), buf+n*(width+buf)])
+
+  k = 0
+  for i in range(0, int(m)):
+    for j in range(0, int(n)):
+      if k>=M:
+        continue
+      cmax = np.max(arr[:,k])
+      cmin = np.min(arr[:,k])
+      r = buf+i*(height+buf)
+      c = buf+j*(width+buf)
+      array[r:r+height, c:c+width] = (arr[:,k].reshape([height, width], order='F') - cmin) / (cmax-cmin)
+      k = k + 1
+  plt.figure()
+  if title is not None:
+    plt.title(title)
+  plt.imshow(array, interpolation='nearest', cmap=plt.cm.gray)
+  if show:
+    plt.show()
+
 # Display a network or array
 def display_color_network(arr, title=None, show=True):
   arr = arr - np.mean(arr)
@@ -123,3 +158,18 @@ def display_color_network(arr, title=None, show=True):
   plt.imshow(array, interpolation='nearest')
   if show:
     plt.show()
+
+
+
+def display_plot(rLoss, xlabel, ylabel):
+  
+  y = rLoss
+  x = np.arange(len(y))
+
+  plt.figure()
+  
+  plt.plot(x, y, linestyle = 'dashed', marker = 'r--', color = 'red')
+  plt.xlabel(xlabel)
+  plt.ylabel(ylabel)
+
+  plt.show()
