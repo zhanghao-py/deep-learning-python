@@ -78,7 +78,7 @@ def cost(theta, inputSize, hiddenSize, numOfClasses, netconfig, lamb, data, labe
 	stackGrad = [util.Empty() for _ in xrange(depth)]
 	for layer in range(depth-1, -1, -1):
 		stackGrad[layer].w = (1.0/numOfSamples) * delta[layer+1].dot(a[layer].T)
-		stackGrad[layer].b = (1.0/numOfSamples) * np.sum(delta[layer+1], 1)[:, np.newaxis]
+		stackGrad[layer].b = (1.0/numOfSamples) * np.sum(delta[layer+1], 1)
 
 	grad = np.append(softmaxThetaGrad.ravel('F'), stack2params(stackGrad)[0])
 
